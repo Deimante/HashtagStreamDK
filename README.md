@@ -21,7 +21,12 @@ To run this project, do this:
 1.1 Save the access token and the access token secret - they will be used to get access to Twitter API by the application.
 2. Register to a Databricks community edition platform.
 2.1 Set up a new cluster. 
-3. 
+
+## Start the streem
+
+## Listen to the streem
+
+
 
 ```
 $ cd ../lorem
