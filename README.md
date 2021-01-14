@@ -4,6 +4,7 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
+* [](#setup)
 
 ## General info
 The purpose of the project is to build an application to visualize the sentiment towards vaccines based on tweets, with live updates.
@@ -16,8 +17,18 @@ Project is created with:
 	
 ## Setup
 To run this project, do this:
+1. Set up a Twitter developer account.
+1.1 Save the access token and the access token secret - they will be used to get access to Twitter API by the application.
+2. Register to a Databricks community edition platform.
+2.1 Set up a new cluster. 
+3. 
 
 ```
 $ cd ../lorem
 $ npm install
 $ npm start
+```
+
+## Create cluser
+
+
