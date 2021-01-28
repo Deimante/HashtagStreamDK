@@ -123,7 +123,9 @@ class TweetListener(tweepy.StreamListener):
 
 The "sparkStreaming" notebook contains the client application which consumes the stream of tweets from the socket, saves the tweets in Parquet files, and visualizes live the 10 most popular hashtags from these tweets.
 
-After initial set-up steps, the following bit of code configures the stream. Note that the TextSocketSource doesn't provide any integrated parsing options, so I can't apply a schema on the data at this stage, but I am adding a timestamp for when the tweet arrived:
+### 2.1 Start the stream
+
+After the initial set-up, the following bit of code configures the stream. Note that the TextSocketSource doesn't provide any integrated parsing options, so I can't apply a schema on the data at this stage, but I am adding a timestamp for when the tweet arrived:
 
 ```python
 tweet_df = sc \
@@ -155,7 +157,11 @@ query = (data
         )
 ```
 
+The following figure shows the files being created in the destination folder:
+
 ![Inspect the folder where the results are saved](resultFiles.gif)
+
+### 2.2 Inspect the tweets
 
 Then, in order to visualize how the tweets saved in the Parquet files look (from the previous step), I start another job to read from these files:
 
@@ -182,6 +188,9 @@ I can query from the temp view (```%sql select * from tempView```) to see the tw
 
 ![Live table of tweets](tweetCollection.gif)
 
+
+### 2.3 Plot the top hashtags
+
 The last bit is to extract the hashtags from the tweets and visualize the most popular ones in a chart which is updating live as new tweets come in:
 
 ```python
@@ -203,9 +212,6 @@ hashtags.createOrReplaceTempView("tempView2")
 Again, I query from another temp view to see results as they come in (```%sql select * from tempView2 limit 10```):
 
 ![Live chart with top 10 hashtags](topHashtagsBarchart.gif)
-
-
-
 
 
 Sources:
