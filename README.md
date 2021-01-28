@@ -202,7 +202,7 @@ hashtags.createOrReplaceTempView("tempView2")
 
 Again, I query from another temp view to see results as they come in (```%sql select * from tempView2 limit 10```):
 
-!!! Visualize how the hashtags look:
+![Live chart with top 10 hashtags](topHashtagsBarchart.gif)
 
 
 
