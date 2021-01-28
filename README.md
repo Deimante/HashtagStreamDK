@@ -1,4 +1,4 @@
-# Sentiment towards vaccines based on tweets
+# Spark Structured Streaming - save and summarize a stream of tweets on vaccines
 
 ## Table of contents
 * [General info](#general-info)
@@ -22,9 +22,100 @@ To run this project, do this:
 2. Register to a Databricks community edition platform.
 2.1 Set up a new cluster. 
 
-## Start the streem
+## Part 1: Start the stream
 
-## Listen to the streem
+The notebook "tweetStream clean" contains the code to set up the connection to Twitter and a TweetListener class which specifies what happens once Twitter sends the tweets.
+
+### Set up the connection to Twitter
+
+```python
+client_socket = socket.socket()  # create a socket 
+    
+# app will use localhost (this computer) port 9876
+client_socket.bind(('localhost', 9876))  
+ 
+print('Waiting for connection')
+client_socket.listen()  # wait for client to connect
+    
+# when connection received, get connection/client address
+connection, address = client_socket.accept()  
+print(f'Connection received from {address}')
+ 
+# configure Twitter access
+auth = tweepy.OAuthHandler(api_key, api_secret_key)
+auth.set_access_token(access_token, access_token_secret)
+    
+# configure Tweepy to wait if Twitter rate limits are reached
+api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)               
+ 
+# create the Stream
+twitter_stream = tweepy.Stream(api.auth, TweetListener(api, connection))
+twitter_stream.filter(track=['vaccine']) 
+
+connection.close()
+client_socket.close()
+```
+
+### The TweetListener class
+
+The TweetListener class defines what happens when the application connects to Twitter:
+1. Notifies that a connection was successfully established.
+2. Tracks the number of tweets received.
+3. Prints out the body of the tweet text.
+4. And, finally, sends the text to the client application which is listening on the socket. Note that I've augmented each tweet before sending it to the client application to make it easier to track the start and the end of the tweet by the client application.
+
+```python
+class TweetListener(tweepy.StreamListener):
+
+    def __init__(self, api, connection, limit=1000):
+        """Create instance variables for tracking number of tweets."""
+        self.connection = connection
+        self.tweet_count = 0
+        self.TWEET_LIMIT = limit  # 1000 by default
+        super().__init__(api)  # call superclass's init
+
+    def on_connect(self):
+        """Called when your connection attempt is successful."""
+        print('Successfully connected to Twitter\n')
+
+    def on_data(self, data):
+        """Called when Twitter pushes a new tweet"""
+        
+        # track number of tweets processed
+        self.tweet_count += 1  
+        print(self.tweet_count)
+        
+        # capture the full tweet message with properties in JSON format:
+        json_data = json.loads(data)
+        
+        # print out the text of the tweet:
+        try:
+            # in case the tweet is longer than 140 characters, need to access extended_tweet property
+            tweetStr = json_data['extended_tweet']['full_text']
+        except Exception as e:
+            try:
+                # in case it's 140 characters, use text property
+                tweetStr = json_data['text']
+            except KeyError:
+                return True
+        print(tweetStr)
+        
+        # send the message to tweet listener
+        try:
+            # send requires bytes, so encode the string in utf-8 format
+            self.connection.send(("Tweet " + str(self.tweet_count) + ": " + tweetStr + "t_end").encode('utf-8'))
+        except Exception as e:
+            print(f'Error: {e}')
+
+        # if TWEET_LIMIT is reached, return False to terminate streaming
+        return self.tweet_count < self.TWEET_LIMIT
+    
+    def on_error(self, status):
+        print(status)
+        return True
+```
+
+## Part 2: Listen to the streem
 
 
 
@@ -35,5 +126,8 @@ $ npm start
 ```
 
 ## Create cluser
+
+Sources:
+
 
 
