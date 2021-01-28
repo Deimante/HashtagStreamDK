@@ -26,12 +26,14 @@ To run this project, do this:
 
 The notebook "tweetStream clean" contains the code to set up the connection to Twitter and a TweetListener class which specifies what happens once Twitter sends the tweets.
 
-### Set up the connection to Twitter
+### 1.1 Set up the connection to Twitter
+
+Start by creating a socket and configuring Twitter access with the developer keys (stored in a separate notebook which I import with ```%run ./keys``` at the start). Then, proceed to start the stream of tweets by calling the TweetListener class (described below in section 1.2). I decided to filter the tweets which contain keyword "vaccine". Finally, it closes the connection and socket once the streaming is done (once the limit of 1000 tweets is reached - I've chosen 1000 for illustration purposes. Note that Twitter imposes limits on their service use on their end). 
 
 ```python
 client_socket = socket.socket()  # create a socket 
     
-# app will use localhost (this computer) port 9876
+# app will use localhost and port 9876
 client_socket.bind(('localhost', 9876))  
  
 print('Waiting for connection')
@@ -116,6 +118,8 @@ class TweetListener(tweepy.StreamListener):
 ```
 
 ## Part 2: Listen to the streem
+
+
 
 
 
