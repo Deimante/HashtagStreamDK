@@ -52,7 +52,7 @@ connection.close()
 client_socket.close()
 ```
 
-### The TweetListener class
+### 1.2 The TweetListener class
 
 The TweetListener class defines what happens when the application connects to Twitter:
 1. Notifies that a connection was successfully established.
