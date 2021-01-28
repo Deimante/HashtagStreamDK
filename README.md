@@ -12,13 +12,16 @@ The purpose of the project is to build an application to create a database of tw
 ## Setup
 To run this project, do this:
 1. Set up a Twitter developer account.
-1.1 Save the access token and the access token secret - they will be used to get access to Twitter API by the application.
-2. Register to a Databricks community edition platform.
-2.1 Set up a new cluster. 
+2. Save the api_key, api_secret_key access, access_token and access_token_secret in own "keys.py" file - they will be used to get access to Twitter API by the application.
+3. Register to a Databricks community edition platform.
+4. Set up a new cluster. 
+5. Import the files to your Databricks workspace: your own keys.py, and the two source files from this repo: "tweetStream clean.dbc" and "sparkStreaming.dbc"
+6. Run the two imported notebooks.
+
 
 ## Part 1: Start the stream
 
-The notebook "tweetStream clean" contains the code to set up the connection to Twitter and a TweetListener class which specifies what happens once Twitter sends the tweets.
+The notebook "tweetStream clean.dbc" contains the code to set up the connection to Twitter and a TweetListener class which specifies what happens once Twitter sends the tweets.
 
 ### 1.1 Set up the connection to Twitter
 
@@ -113,7 +116,7 @@ class TweetListener(tweepy.StreamListener):
 
 ## Part 2: Process the streem of tweets
 
-The "sparkStreaming" notebook contains the client application which consumes the stream of tweets from the socket, saves the tweets in Parquet files, and visualizes live the 10 most popular hashtags from these tweets.
+The "sparkStreaming.dbc" notebook contains the client application which consumes the stream of tweets from the socket, saves the tweets in Parquet files, and visualizes live the 10 most popular hashtags from these tweets.
 
 ### 2.1 Start the stream
 
