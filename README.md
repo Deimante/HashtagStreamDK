@@ -1,4 +1,4 @@
-# Spark Structured Streaming - save and summarize a stream of tweets on vaccines
+# Spark Structured Streaming - processing a stream of tweets on vaccines
 
 ## Table of contents
 * [General info](#general-info)
@@ -21,6 +21,8 @@ To run this project, do this:
 1.1 Save the access token and the access token secret - they will be used to get access to Twitter API by the application.
 2. Register to a Databricks community edition platform.
 2.1 Set up a new cluster. 
+
+## Create cluser
 
 ## Part 1: Start the stream
 
@@ -117,19 +119,78 @@ class TweetListener(tweepy.StreamListener):
         return True
 ```
 
-## Part 2: Listen to the streem
+## Part 2: Process the streem of tweets
 
+The "sparkStreaming" notebook contains the client application which consumes the stream of tweets from the socket, saves the tweets in Parquet files, and visualizes live the 10 most popular hashtags from these tweets.
 
+After initial set-up steps, the following bit of code configures the stream. Note that the TextSocketSource doesn't provide any integrated parsing options, so I can't apply a schema on the data at this stage, but I am adding a timestamp for when the tweet arrived:
 
-
-
+```python
+tweet_df = sc \
+        .readStream \
+        .format("socket") \
+        .option("host", "localhost") \
+        .option("port", 9876) \
+        .option("includeTimestamp", "true") \
+        .load()
 ```
-$ cd ../lorem
-$ npm install
-$ npm start
+
+Then, I create another dataframe which splits the stream of text into separate tweets based on the 't_end' 
+
+```python
+data = tweet_df.select([explode(split(tweet_df.value,"t_end")).alias("tweet"),"timestamp"])
 ```
 
-## Create cluser
+The next bit below starts the streaming to save the tweets in parquet files at the destination path defined earlier. 
+
+```python
+query = (data
+         .writeStream
+         .format("parquet") # sink to save the tweets
+         .option("path", output_path)
+         .option("checkpointLocation", checkpoint_path) # add checkpointing 
+         .outputMode("append")
+         .trigger(processingTime='5 seconds')
+         .start() 
+        )
+```
+
+!!! Visualize how the files are created
+
+Then, in order to visualize how the tweets saved in the Parquet files look (from the previous step), I start another job to read from these files:
+
+```python
+parquetSchema = (
+  StructType()
+  .add("timestamp", TimestampType()) #event time at the source
+  .add("tweet", StringType()))
+
+tt = (#spark.readStream
+          sc \
+           .readStream \
+           .schema(parquetSchema)
+           .format("parquet")
+           .option("maxFilesPerTrigger", 1) #slow it down to demo
+           .load(output_path)
+          )
+
+# generate temp table for inspection
+tt.createOrReplaceTempView("tempView")
+```
+
+I can query from the temp view (```%sql select * from tempView```) to see the tweets live:
+
+!!! Visualize how the tweets look:
+
+The last bit is to extract the hashtags from the tweets and visualize the most popular ones in a chart which is updating live as new tweets come in:
+
+Again, I query from another temp view to see results as they come in (```%sql select * from tempView2 limit 10```):
+
+!!! Visualize how the hashtags look:
+
+
+
+
 
 Sources:
 
