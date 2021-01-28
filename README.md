@@ -155,7 +155,7 @@ query = (data
         )
 ```
 
-!!! Visualize how the files are created
+![Inspect the folder where the results are saved](resultFiles.gif)
 
 Then, in order to visualize how the tweets saved in the Parquet files look (from the previous step), I start another job to read from these files:
 
