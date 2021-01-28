@@ -7,13 +7,7 @@
 * [](#setup)
 
 ## General info
-The purpose of the project is to build an application to visualize the sentiment towards vaccines based on tweets, with live updates.
-	
-## Technologies
-Project is created with:
-* xx version: 12.3
-* xx version: 2.33
-* x version: 999
+The purpose of the project is to build an application to create a database of tweets (text only) and visualize the most popular hashtags from those tweets with a live chart.
 	
 ## Setup
 To run this project, do this:
@@ -21,8 +15,6 @@ To run this project, do this:
 1.1 Save the access token and the access token secret - they will be used to get access to Twitter API by the application.
 2. Register to a Databricks community edition platform.
 2.1 Set up a new cluster. 
-
-## Create cluser
 
 ## Part 1: Start the stream
 
@@ -215,6 +207,5 @@ Again, I query from another temp view to see results as they come in (```%sql se
 
 
 Sources:
-
-
-
+1. "Python for Programmers" by Paul J. Deitel and Harvey Deitel; 2019.
+2. "Writing Continuous Applications with Structured Streaming PySpark API - Jules Damji Databricks" - a YouTube video and associated files.
