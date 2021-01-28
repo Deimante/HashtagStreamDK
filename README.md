@@ -4,7 +4,7 @@
 The purpose of the project is to build an application to create a database of tweets (text only) and visualize the most popular hashtags from those tweets with a live chart.
 	
 ## Setup
-To run this project, do this:
+To run this project:
 1. Set up a Twitter developer account.
 2. Save the api_key, api_secret_key access, access_token and access_token_secret in own "keys.py" file - they will be used to get access to Twitter API by the application.
 3. Register to a Databricks community edition platform.
