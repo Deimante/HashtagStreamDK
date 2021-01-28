@@ -1,4 +1,4 @@
-# Spark Structured Streaming - processing a stream of tweets on vaccines
+# Spark Structured Streaming - processing a stream of tweets
 
 ## General info
 The purpose of the project is to build an application to create a database of tweets (text only) and visualize the most popular hashtags from those tweets with a live chart.
