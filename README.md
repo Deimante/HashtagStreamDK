@@ -180,7 +180,7 @@ tt.createOrReplaceTempView("tempView")
 
 I can query from the temp view (```%sql select * from tempView```) to see the tweets live:
 
-!!! Visualize how the tweets look:
+![Live table of tweets](tweetCollection.gif)
 
 The last bit is to extract the hashtags from the tweets and visualize the most popular ones in a chart which is updating live as new tweets come in:
 
