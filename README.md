@@ -184,6 +184,22 @@ I can query from the temp view (```%sql select * from tempView```) to see the tw
 
 The last bit is to extract the hashtags from the tweets and visualize the most popular ones in a chart which is updating live as new tweets come in:
 
+```python
+hashtags = tt.withColumn('hashtag', explode(split(col('tweet'), ' '))) \
+    .groupBy('hashtag') \
+    .count() \
+    .sort('count', ascending=False). \
+    filter(col('hashtag').contains('#'))
+
+writeTweet = hashtags.writeStream. \
+          outputMode("complete"). \
+          format("memory"). \
+          queryName("topHashtags"). \
+          start()
+```
+
+hashtags.createOrReplaceTempView("tempView2")
+
 Again, I query from another temp view to see results as they come in (```%sql select * from tempView2 limit 10```):
 
 !!! Visualize how the hashtags look:
