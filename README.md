@@ -162,8 +162,7 @@ parquetSchema = (
   .add("timestamp", TimestampType()) #event time at the source
   .add("tweet", StringType()))
 
-tt = (#spark.readStream
-          sc \
+tt = (sc \
            .readStream \
            .schema(parquetSchema)
            .format("parquet")
